@@ -1,11 +1,14 @@
-Cvidro = 0.16     #calor específico do vidro
-Ccoca = 0.9      #calor específico da coca
+Cvidro = 840     #calor específico do vidro
+Ccoca = 4725      #calor específico da coca
 ktampa = 0.2     #condutibilidade do vidro 
 kvidro = 1       #condutibilidade da tampa
 h =  9.98         #coeficiente de transferencia convectiva do ar
-Tamb = 25        #temperatura ambiente
+Tamb = 298        #temperatura ambiente
 sigma = 5.67 * 1e-8     #constante de stefan-boltzmann
 Mli = 0.29              #massa liquido
 Mvi = 0.17            #massa vidro
 altura = 0.16             #altura garrafa
 r = 0.0275           #raio base
+et = 0.005           #espessura da tampa
+e = 0.003          #espessura do vidro
+er= 0.9           #emissividade do refrigerante
