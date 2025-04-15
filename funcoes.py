@@ -4,69 +4,66 @@ from scipy.integrate import odeint
 import numpy as np
 import matplotlib.pyplot as plt
 
-def Q1(T):
-    Tv=T[0]
-    Tr=T[1]
-    RcondVf = e / ((2*kvidro)*2*pi*(r + 0.75*e)*altura)
-    RconvV = 1 / (h*2*pi*(r+e)*altura)
-    F1 = (Tamb - Tv)/(RcondVf + RconvV)
-    return F1
-
-def Q2(T):
-    Tv=T[0]
-    Tr=T[1]
-    Rcondvb = e / (2*kvidro*2*pi*(r+0.25*e)*altura)
-    F2 = abs(Tv - Tr) / Rcondvb
-    return F2
-
-def Q3(T):
-    Tv=T[0]
-    Tr=T[1]
-    Rcondt = et /(ktampa*pi*r**2)
-    Rconvt = 1/(h * pi * r **2)
-    F3 = (Tamb-Tr)/(Rcondt+Rconvt)
-    return abs(F3)
-
-def Q4(T):
-    Tv=T[0]
-    Tr=T[1]
-    Rrad = 1/(er*sigma*pi*r**2)
-    F4 = (Tamb**4 - Tr**4)/Rrad
-    return abs(F4)
 
 def modelo(T, t):
-    Qum = Q1(T)
-    Qdois = Q2(T)
-    Qtres = Q3(T)
-    Qquatro = Q4(T)
-    dTrdt = (Qdois+Qtres+Qquatro)/(Mli*Ccoca)
-    dTvdt = (Qum-Qdois)/(Mvi*Cvidro)
-    dxdt = [dTrdt, dTvdt]
+    Tv=T[0]
+    Tr=T[1]
+    Q1=  (Tamb - Tv)      /(e/(2*kvidro*2*pi*r*altura) + 1/(h*2*pi*r*altura))
+    Q2 = (Tv - Tr)        /(e/(2*kvidro*2*pi*r*altura))
+    Q3 = (Tamb-Tr)        /(et/(ktampa*pi*r**2) + 1/(h * pi * r **2))
+    Q4 = (Tamb**4 - Tr**4)/(1/(er*sigma*pi*r**2))
+    # Q1=  (Tamb - Tv)      /(e/((2*kvidro)*2*pi*(r + 0.75*e)*altura) + 1/(h*2*pi*(r+e)*altura))
+    # Q2 = (Tv - Tr)        /(e/(2*kvidro*2*pi*(r+0.25*e)*altura))
+    # Q3 = (Tamb-Tr)        /(et/(ktampa*pi*r**2) + 1/(h * pi * r **2))
+    # Q4 = (Tamb**4 - Tr**4)/(1/(er*sigma*pi*r**2))
+    dTrdt = (Q1+Q3+Q4)/(Mli*Ccoca)
+    dTvdt = (Q1-Q2)/(Mvi*Cvidro)
+    dxdt = [dTvdt, dTrdt]
+    return dxdt
+
+
+#Construção do grafico conclusivo:
+
+espessura = np.arange(0.001, 10, 0.1)
+
+#Calculo do tempo ate atingir 90% da Tamb
+
+Trel = 0.9*25 + 273
+
+def modeloc(T, t, e):
+    Tv=T[0]
+    Tr=T[1]
+    Q1=  (Tamb - Tv)      /(e/(2*kvidro*2*pi*r*altura) + 1/(h*2*pi*r*altura))
+    Q2 = (Tv - Tr)        /(e/(2*kvidro*2*pi*r*altura))
+    Q3 = (Tamb-Tr)        /(et/(ktampa*pi*r**2) + 1/(h * pi * r **2))
+    Q4 = (Tamb**4 - Tr**4)/(1/(er*sigma*pi*r**2))
+    # Q1=  (Tamb - Tv)      /(e/((2*kvidro)*2*pi*(r + 0.75*e)*altura) + 1/(h*2*pi*(r+e)*altura))
+    # Q2 = (Tv - Tr)        /(e/(2*kvidro*2*pi*(r+0.25*e)*altura))
+    # Q3 = (Tamb-Tr)        /(et/(ktampa*pi*r**2) + 1/(h * pi * r **2))
+    # Q4 = (Tamb**4 - Tr**4)/(1/(er*sigma*pi*r**2))
+    dTrdt = (Q1+Q3+Q4)/(Mli*Ccoca)
+    dTvdt = (Q1-Q2)/(Mvi*Cvidro)
+    dxdt = [dTvdt, dTrdt]
     return dxdt
 
 x=273
 y=273
 T_0 = [x,y]
-dt = 0.01
-tempo = np.arange(0,36000,dt)
+dt = 1
+tempo = np.arange(0,36000*8,dt)
+tmin = [0]*len(espessura)
 
+for i in range(len(espessura)):
+    w = odeint(modeloc, T_0, tempo, args = (espessura[i],))
+    Tr = w[:,1]
+    for j in range(len(Tr)):
+        if Tr[j]>=Trel:
+            tmin[i] = tempo[j]/3600
+            break   
 
-a = odeint(modelo, T_0, tempo)
-
-Tv = a[:,0]
-Tr = a[:,1]
-
-for i in range(len(Tv)):
-    if Tv[i]>=297.5:
-        itemp = i*dt
-        break
-print(itemp)        
-
-plt.plot(tempo, Tv, label="Temperatura do vidro")
-plt.plot(tempo, Tr,'r--' , label="Temperatura do refrigerante")
-plt.title("Primeira iteração")
-plt.xlabel("Tempo(s)")
-plt.ylabel("Temperatura(K)")
-plt.legend()
+plt.plot(espessura, tmin)
+plt.title("Gráfico conclusivo")
+plt.xlabel("espessura(m))")
+plt.ylabel("tempo(horas)")
 plt.grid()
 plt.show()
