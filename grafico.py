@@ -1,8 +1,8 @@
 from funcoes import*
 
 #Grafico inicial
-x=273
-y=273
+x=273.15 + 7.4
+y=273.15 + 0
 T_0 = [x,y]
 dt = 0.01
 tempo = np.arange(0,36000,dt)

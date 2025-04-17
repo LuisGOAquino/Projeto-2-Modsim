@@ -28,7 +28,7 @@ espessura = np.arange(0.001, 10, 0.1)
 
 #Calculo do tempo ate atingir 90% da Tamb
 
-Trel = 0.9*25 + 273
+Trel = 0.9*19.5 + 273.15
 
 def modeloc(T, t, e):
     Tv=T[0]
@@ -46,8 +46,8 @@ def modeloc(T, t, e):
     dxdt = [dTvdt, dTrdt]
     return dxdt
 
-x=273
-y=273
+x=273.15+7.4
+y=273.15
 T_0 = [x,y]
 dt = 1
 tempo = np.arange(0,36000*8,dt)
