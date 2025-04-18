@@ -24,11 +24,11 @@ def modelo(T, t):
 
 #Construção do grafico conclusivo:
 
-espessura = np.arange(0.001, 10, 0.1)
-
+espessura = np.arange(0.001, 0.1,0.001)
+espessuraf= np.arange(0.001, 10, 0.1)
 #Calculo do tempo ate atingir 90% da Tamb
 
-Trel = 0.9*19.5 + 273.15
+Trel =17.46+273.15
 
 def modeloc(T, t, e):
     Tv=T[0]
@@ -63,7 +63,7 @@ for i in range(len(espessura)):
 
 plt.plot(espessura, tmin)
 plt.title("Gráfico conclusivo")
-plt.xlabel("espessura(m))")
+plt.xlabel("espessura(m)")
 plt.ylabel("tempo(horas)")
 plt.grid()
 plt.show()
