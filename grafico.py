@@ -41,5 +41,5 @@ for tempo in lista_tempo_csv:
     listatsegundos.append(int(tempo*3600))
 for i in range(len(lista_Tliq_csv)):
     tempola = int(listatsegundos[i] / dt)
-    dif += (Tr[tempola] - 273.15) - lista_Tliq_csv[i]
+    dif +=  lista_Tliq_csv[i] - (Tr[tempola] - 273.15) #(realizado - previsto)
 print(dif/len(listatsegundos))    
